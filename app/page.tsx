@@ -14,9 +14,12 @@ import TradeForm from '@/components/TradeForm'
 import TradeCard from '@/components/TradeCard'
 import StatsCard from '@/components/StatsCard'
 import MetricsPage from '@/components/MetricsPage'
+import CalendarPage from '@/components/CalendarPage'
 import SettingsPage from '@/components/SettingsPage'
 import ExportPage from '@/components/ExportPage'
 import MasterclassPage from '@/components/MasterclassPage'
+import CompoundCalculatorPage from '@/components/CompoundCalculatorPage'
+import OptionWheelSimulatorPage from '@/components/OptionWheelSimulatorPage'
 import Sidebar from '@/components/Sidebar'
 import type { AppView } from '@/components/Sidebar'
 import { Plus, DollarSign, Calendar, TrendingUp, ArrowUpDown, Search, Infinity } from 'lucide-react'
@@ -140,6 +143,9 @@ export default function Home() {
               compact={prefs?.metricsCompact ?? false}
             />
           )}
+          {view === 'wheel' && <OptionWheelSimulatorPage />}
+          {view === 'calendar' && <CalendarPage trades={trades} />}
+          {view === 'compound' && <CompoundCalculatorPage />}
           {view === 'settings' && <SettingsPage />}
           {view === 'export' && <ExportPage trades={trades} />}
           {view === 'masterclass' && <MasterclassPage />}
@@ -277,6 +283,19 @@ export default function Home() {
           )}
         </div>
       </Sidebar>
+
+      {/* Compound calculator - above masterclass */}
+      <button
+        onClick={() => setView('compound')}
+        className={`fixed bottom-20 md:bottom-24 left-2 md:left-4 w-10 h-10 md:w-12 md:h-12 bg-dark-card border rounded-lg md:rounded-xl shadow-lg hover:border-white/20 transition-all duration-200 ease-out flex items-center justify-center z-40 touch-manipulation ${
+          view === 'compound'
+            ? 'bg-white text-black border-white/30'
+            : 'border-dark-border text-dark-muted hover:text-white hover:bg-dark-surface active:bg-dark-border'
+        }`}
+        aria-label="Compound interest calculator"
+      >
+        <span className="font-bold text-lg md:text-xl">%</span>
+      </button>
 
       {/* Masterclass button - bottom of page */}
       <button

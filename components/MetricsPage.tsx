@@ -24,7 +24,7 @@ interface MetricsPageProps {
 }
 
 const cardBase =
-  'bg-dark-card border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-5 hover:border-white/20 transition-colors'
+  'bg-dark-card border border-white/10 rounded-lg sm:rounded-xl p-3 sm:p-4 md:p-5 lg:p-6 hover:border-white/20 transition-colors'
 
 export default function MetricsPage({
   stats,
@@ -38,10 +38,10 @@ export default function MetricsPage({
   const gridGap = compact ? 'gap-2 sm:gap-2' : 'gap-2 sm:gap-3'
 
   return (
-    <div className="w-full max-w-4xl">
-      <div className={`flex items-start justify-between gap-3 ${compact ? 'mb-3 sm:mb-4' : 'mb-4 sm:mb-6'}`}>
+    <div className="w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto px-0 sm:px-1 space-y-4 sm:space-y-5 md:space-y-6 pb-24 sm:pb-28 md:pb-32 lg:pb-36">
+      <div className={`flex items-start justify-between gap-3 md:gap-4 ${compact ? 'mb-3 sm:mb-4' : 'mb-4 sm:mb-5 md:mb-6'}`}>
         <div>
-          <h1 className="text-lg sm:text-xl font-bold text-white mb-1">Metrics</h1>
+          <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1">Metrics</h1>
           <p className="text-xs sm:text-sm text-dark-muted">
             {tradeCount} trade{tradeCount !== 1 ? 's' : ''}
             {stats.totalContracts > 0 &&

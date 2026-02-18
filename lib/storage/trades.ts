@@ -31,7 +31,7 @@ export function deleteTrade(id: string): void {
   savePayload(payload)
 }
 
-export function exportTradesToCsv(trades: Trade[]): void {
+function downloadCsv(trades: Trade[], filenameSuffix: string): void {
   if (typeof window === 'undefined') return
   const headers = [
     'Type',
@@ -64,7 +64,28 @@ export function exportTradesToCsv(trades: Trade[]): void {
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = `p-plus-trades-${new Date().toISOString().slice(0, 10)}.csv`
+  a.download = `p-plus-trades-${filenameSuffix}-${new Date().toISOString().slice(0, 10)}.csv`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+export function exportTradesToCsv(trades: Trade[]): void {
+  downloadCsv(trades, 'all')
+}
+
+export function exportTradesToCsvWithFilename(trades: Trade[], filenameSuffix: string): void {
+  downloadCsv(trades, filenameSuffix)
+}
+
+export function exportTradesToJson(trades: Trade[]): void {
+  if (typeof window === 'undefined') return
+  const payload = { exportedAt: new Date().toISOString(), version: 1, trades }
+  const json = JSON.stringify(payload, null, 2)
+  const blob = new Blob([json], { type: 'application/json;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `p-plus-backup-${new Date().toISOString().slice(0, 10)}.json`
   a.click()
   URL.revokeObjectURL(url)
 }

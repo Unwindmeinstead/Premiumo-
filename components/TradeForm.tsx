@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Trade, TradeType } from '@/types'
 import { formatCurrency } from '@/lib/utils'
 import { X } from 'lucide-react'
+import DatePicker from './DatePicker'
 
 interface TradeFormProps {
   onSave: (trade: Trade) => void
@@ -169,26 +170,18 @@ export default function TradeForm({ onSave, onClose, initialTrade }: TradeFormPr
 
           {/* Dates */}
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
-            <div>
-              <label className="block text-xs font-medium text-dark-muted mb-1">Opened</label>
-              <input
-                type="date"
-                value={formData.dateOpened}
-                onChange={e => setFormData({ ...formData, dateOpened: e.target.value })}
-                className={inputBase}
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-dark-muted mb-1">Expiration</label>
-              <input
-                type="date"
-                value={formData.expiration}
-                onChange={e => setFormData({ ...formData, expiration: e.target.value })}
-                className={inputBase}
-                required
-              />
-            </div>
+            <DatePicker
+              value={formData.dateOpened || ''}
+              onChange={(date) => setFormData({ ...formData, dateOpened: date })}
+              label="Opened"
+              required
+            />
+            <DatePicker
+              value={formData.expiration || ''}
+              onChange={(date) => setFormData({ ...formData, expiration: date })}
+              label="Expiration"
+              required
+            />
           </div>
 
           {/* Status */}

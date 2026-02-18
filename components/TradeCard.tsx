@@ -3,6 +3,7 @@
 import { Trade } from '@/types'
 import { formatCurrency, formatDate } from '@/lib/utils'
 import { Edit2, Trash2, Copy } from 'lucide-react'
+import { differenceInCalendarDays } from 'date-fns'
 
 interface TradeCardProps {
   trade: Trade
@@ -16,6 +17,14 @@ export default function TradeCard({ trade, onEdit, onDuplicate, onDelete }: Trad
   const isCall = trade.type === 'covered_call'
 
   const statusClass = 'bg-white/10 text-white border border-white/20 rounded-lg'
+
+  const showDte = trade.status === 'open' && !!trade.expiration
+  const rawDaysToExpiration =
+    showDte && trade.expiration
+      ? differenceInCalendarDays(new Date(trade.expiration), new Date())
+      : null
+  const daysToExpiration =
+    rawDaysToExpiration != null ? Math.max(0, rawDaysToExpiration) : null
 
   return (
     <div className="bg-dark-card border border-dark-border rounded-lg sm:rounded-xl p-4 sm:p-5 hover:border-white/25 transition-colors">
@@ -92,7 +101,14 @@ export default function TradeCard({ trade, onEdit, onDuplicate, onDelete }: Trad
           </div>
           <div className="text-right">
             <p className="text-dark-muted text-xs">Expires</p>
-            <p className="text-white">{formatDate(trade.expiration)}</p>
+            <p className="text-white">
+              {formatDate(trade.expiration)}
+              {showDte && daysToExpiration != null && (
+                <span className="ml-1.5 text-[10px] sm:text-xs text-dark-muted">
+                  · {daysToExpiration === 0 ? 'today' : `${daysToExpiration}d`}
+                </span>
+              )}
+            </p>
           </div>
         </div>
         {trade.notes && (

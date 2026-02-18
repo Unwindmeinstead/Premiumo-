@@ -3,9 +3,10 @@
 import { useState } from 'react'
 
 const cardBase =
-  'bg-dark-card border border-white/10 rounded-lg sm:rounded-xl p-4 sm:p-5 hover:border-white/20 transition-colors'
+  'bg-dark-card border border-white/10 rounded-lg sm:rounded-xl p-4 sm:p-5 md:p-5 lg:p-6 hover:border-white/20 transition-colors'
 
 const TABS = [
+  { id: 'knowledge', label: 'Knowledge base' },
   { id: 'core', label: 'Core idea' },
   { id: 'puts', label: 'Cash-secured puts' },
   { id: 'calls', label: 'Covered calls' },
@@ -19,25 +20,25 @@ const TABS = [
 type TabId = (typeof TABS)[number]['id']
 
 export default function MasterclassPage() {
-  const [activeTab, setActiveTab] = useState<TabId>('core')
+  const [activeTab, setActiveTab] = useState<TabId>('knowledge')
 
   return (
-    <div className="w-full max-w-3xl space-y-4 sm:space-y-5 pb-24 sm:pb-32">
+    <div className="w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto px-0 sm:px-1 space-y-4 sm:space-y-5 md:space-y-6 pb-24 sm:pb-28 md:pb-32 lg:pb-36">
       <div>
-        <h1 className="text-lg sm:text-xl font-bold text-white mb-1">Options Masterclass</h1>
-        <p className="text-xs sm:text-sm text-dark-muted">
+        <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-1">Options Masterclass</h1>
+        <p className="text-xs sm:text-sm md:text-base text-dark-muted max-w-2xl">
           A practical overview of covered calls, cash-secured puts, and key income strategies.
         </p>
       </div>
 
-      {/* Tabs - above the content card */}
-      <div className="flex gap-1 p-1 rounded-lg sm:rounded-xl bg-dark-surface border border-white/10 overflow-x-auto">
+      {/* Tabs - responsive: scroll on small, wrap on md+ */}
+      <div className="flex flex-wrap gap-1.5 sm:gap-2 p-1.5 sm:p-2 md:p-2 rounded-lg sm:rounded-xl bg-dark-surface border border-white/10 overflow-x-auto md:overflow-x-visible">
         {TABS.map(({ id, label }) => (
           <button
             key={id}
             type="button"
             onClick={() => setActiveTab(id)}
-            className={`shrink-0 px-3 py-2 rounded-md text-xs sm:text-sm font-medium transition-colors touch-manipulation whitespace-nowrap ${
+            className={`shrink-0 px-3 py-2 sm:px-4 sm:py-2.5 md:px-4 md:py-2.5 rounded-md text-xs sm:text-sm md:text-base font-medium transition-colors touch-manipulation whitespace-nowrap ${
               activeTab === id
                 ? 'bg-white text-black'
                 : 'text-dark-muted hover:text-white hover:bg-white/10'
@@ -49,7 +50,33 @@ export default function MasterclassPage() {
       </div>
 
       {/* Single section card based on active tab */}
-      <div className="min-h-[200px]">
+      <div className="min-h-[200px] md:min-h-[260px]">
+        {activeTab === 'knowledge' && (
+          <section className={cardBase}>
+            <h2 className="text-sm sm:text-base font-semibold text-white mb-2 sm:mb-3">
+              What is P+?
+            </h2>
+            <p className="text-xs sm:text-sm text-dark-muted leading-relaxed mb-3">
+              P+ is a <span className="text-white">premium tracker</span> for covered calls and cash-secured puts. You log each trade (symbol, strike, premium, expiration, etc.) and the app tracks your total premium, costs from closing early, win rate, and breakdowns by month and symbol. Everything stays on your device—no account or server.
+            </p>
+            <h3 className="text-xs sm:text-sm font-semibold text-white mt-4 mb-2">How to use P+</h3>
+            <ul className="text-xs sm:text-sm text-dark-muted space-y-1.5 leading-relaxed">
+              <li><span className="text-white font-medium">Dashboard (P+)</span>: Home view. Top cards show total premium, total cost (closed early), contracts traded, and this month. Add trades with the + button. Filter by type or symbol, sort by date or premium. Open and closed trades appear as cards; use the icons to duplicate, edit, or delete.</li>
+              <li><span className="text-white font-medium">Metrics (M)</span>: Stats and breakdowns—premium over time, positions &amp; performance, averages, and premium by month/symbol. Use the ? guide for how to read the numbers.</li>
+              <li><span className="text-white font-medium">Calendar (C)</span>: Open positions grouped by expiration date so you see what’s expiring when.</li>
+              <li><span className="text-white font-medium">Settings (gear)</span>: Display (currency style, decimals, date format), dashboard defaults (sort, filter), metrics compact view, and data/backup info.</li>
+              <li><span className="text-white font-medium">Export (down arrow)</span>: Download CSV (all, open only, or closed only) for spreadsheets, or JSON for full backup.</li>
+            </ul>
+            <h3 className="text-xs sm:text-sm font-semibold text-white mt-4 mb-2">Adding and editing trades</h3>
+            <p className="text-xs sm:text-sm text-dark-muted leading-relaxed mb-2">
+              Tap + to add a covered call or cash-secured put. Enter symbol, strike, premium per share, quantity, expiration, and optional notes. When you close a trade early and pay a buyback cost, edit the trade and set status to closed and add the buyback cost so your metrics stay accurate.
+            </p>
+            <p className="text-[11px] sm:text-xs text-dark-muted">
+              You can duplicate any trade (copy icon on the card) to pre-fill a new one with the same details. Data is stored locally; use Export to back up.
+            </p>
+          </section>
+        )}
+
         {activeTab === 'core' && (
           <section className={cardBase}>
             <h2 className="text-sm sm:text-base font-semibold text-white mb-2 sm:mb-3">

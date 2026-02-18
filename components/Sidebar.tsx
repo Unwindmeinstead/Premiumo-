@@ -1,8 +1,8 @@
 'use client'
 
-import { Cog, TrendingUp, FileDown } from 'lucide-react'
+import { Cog, TrendingUp, FileDown, Calendar, CircleDot } from 'lucide-react'
 
-export type AppView = 'dashboard' | 'metrics' | 'settings' | 'export' | 'masterclass'
+export type AppView = 'dashboard' | 'metrics' | 'wheel' | 'calendar' | 'settings' | 'export' | 'compound' | 'masterclass'
 
 interface SidebarProps {
   children: React.ReactNode
@@ -12,6 +12,8 @@ interface SidebarProps {
 
 const navItems: { view: AppView; letter: string }[] = [
   { view: 'metrics', letter: 'M' },
+  { view: 'wheel', letter: 'W' },
+  { view: 'calendar', letter: 'C' },
   { view: 'settings', letter: 'S' },
   { view: 'export', letter: 'E' },
 ]
@@ -30,11 +32,14 @@ export default function Sidebar({ children, activeView, onNavigate }: SidebarPro
           aria-label="Dashboard"
           className={`${cardBase} ${
             activeView === 'dashboard'
-              ? 'bg-white text-black border-white/30'
-              : 'bg-dark-surface border-dark-border text-dark-muted hover:text-white hover:border-white/20 active:bg-dark-border'
+              ? 'bg-green-600 text-white border-green-500'
+              : 'bg-green-700 text-white border-green-600 hover:bg-green-600 hover:border-green-500 active:bg-green-800'
           }`}
         >
-          P+
+          <span className="inline-flex items-baseline leading-none text-inherit">
+            <span className="text-xl md:text-2xl font-extrabold">P</span>
+            <span className="text-xs md:text-sm font-semibold ml-0.5 align-top">+</span>
+          </span>
         </button>
         <nav className="flex flex-col gap-3">
           {navItems.map(({ view, letter }) => (
@@ -51,6 +56,12 @@ export default function Sidebar({ children, activeView, onNavigate }: SidebarPro
             >
               {view === 'metrics' && (
                 <TrendingUp size={18} className="md:w-5 md:h-5 shrink-0" strokeWidth={2.5} />
+              )}
+              {view === 'wheel' && (
+                <CircleDot size={18} className="md:w-5 md:h-5 shrink-0" strokeWidth={2.5} />
+              )}
+              {view === 'calendar' && (
+                <Calendar size={18} className="md:w-5 md:h-5 shrink-0" strokeWidth={2.5} />
               )}
               {view === 'settings' && (
                 <Cog size={18} className="md:w-5 md:h-5 shrink-0" strokeWidth={2.5} />

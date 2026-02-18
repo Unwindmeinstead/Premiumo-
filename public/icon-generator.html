@@ -10,19 +10,16 @@
     function drawIcon(canvas, size) {
       const ctx = canvas.getContext('2d');
       
-      // Background
-      ctx.fillStyle = '#0a0a0a';
-      ctx.fillRect(0, 0, size, size);
-      
-      // Card background
-      const padding = size * 0.1;
-      ctx.fillStyle = '#1a1a1a';
-      ctx.roundRect(padding, padding, size - padding * 2, size - padding * 2, size * 0.08);
+      // White card (matches app P+ button)
+      const padding = size * 0.12;
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.roundRect(padding, padding, size - padding * 2, size - padding * 2, size * 0.12);
       ctx.fill();
       
-      // P+ text
-      ctx.fillStyle = '#3b82f6';
-      ctx.font = `bold ${size * 0.35}px Arial`;
+      // P+ text - black
+      ctx.fillStyle = '#000000';
+      ctx.font = `bold ${size * 0.38}px Arial, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText('P+', size / 2, size / 2);

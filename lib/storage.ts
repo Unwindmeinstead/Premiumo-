@@ -5,4 +5,6 @@ export {
   updateTrade,
   deleteTrade,
   exportTradesToCsv,
+  exportTradesToCsvWithFilename,
+  exportTradesToJson,
 } from './storage/index'
