@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>P+ Icon Generator</title>
+</head>
+<body>
+  <canvas id="icon192" width="192" height="192"></canvas>
+  <canvas id="icon512" width="512" height="512"></canvas>
+  <script>
+    function drawIcon(canvas, size) {
+      const ctx = canvas.getContext('2d');
+      
+      // Background
+      ctx.fillStyle = '#0a0a0a';
+      ctx.fillRect(0, 0, size, size);
+      
+      // Card background
+      const padding = size * 0.1;
+      ctx.fillStyle = '#1a1a1a';
+      ctx.roundRect(padding, padding, size - padding * 2, size - padding * 2, size * 0.08);
+      ctx.fill();
+      
+      // P+ text
+      ctx.fillStyle = '#3b82f6';
+      ctx.font = `bold ${size * 0.35}px Arial`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('P+', size / 2, size / 2);
+    }
+    
+    const canvas192 = document.getElementById('icon192');
+    const canvas512 = document.getElementById('icon512');
+    
+    drawIcon(canvas192, 192);
+    drawIcon(canvas512, 512);
+    
+    // Download buttons (for manual download)
+    canvas192.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'icon-192.png';
+      document.body.appendChild(a);
+      console.log('192x192 icon ready - right click canvas to save');
+    });
+    
+    canvas512.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'icon-512.png';
+      document.body.appendChild(a);
+      console.log('512x512 icon ready - right click canvas to save');
+    });
+  </script>
+</body>
+</html>
