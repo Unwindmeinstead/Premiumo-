@@ -22,7 +22,7 @@ import CompoundCalculatorPage from '@/components/CompoundCalculatorPage'
 import OptionWheelSimulatorPage from '@/components/OptionWheelSimulatorPage'
 import Sidebar from '@/components/Sidebar'
 import type { AppView } from '@/components/Sidebar'
-import { Plus, DollarSign, Calendar, TrendingUp, ArrowUpDown, Search, Infinity } from 'lucide-react'
+import { Plus, DollarSign, Calendar, TrendingUp, ArrowUpDown, Search } from 'lucide-react'
 
 type FilterType = 'all' | 'covered_call' | 'cash_secured_put'
 type SortField = 'dateOpened' | 'expiration' | 'premium' | 'symbol'
@@ -133,7 +133,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-dark-bg text-dark-text">
       <Sidebar activeView={view} onNavigate={setView}>
-        <div key={view} className="px-3 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8 w-full max-w-full overflow-x-hidden animate-view-in">
+        <div key={view} className="px-3 py-3 sm:px-4 sm:py-5 md:px-6 md:py-8 lg:px-8 w-full max-w-full overflow-x-hidden animate-view-in pb-6">
           {view === 'metrics' && (
             <MetricsPage
               stats={stats}
@@ -152,7 +152,7 @@ export default function Home() {
           {view === 'dashboard' && (
             <>
           {/* Top metrics - 4 small cards - mobile-first */}
-          <section className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
+          <section className="grid grid-cols-2 gap-1.5 sm:gap-3 md:gap-4 mb-3 sm:mb-5">
             <StatsCard
               title="Total Premium"
               value={formatCurrency(stats.totalPremium)}
@@ -178,15 +178,24 @@ export default function Home() {
             />
           </section>
 
-          <p className="text-xs sm:text-sm text-dark-muted mb-4 sm:mb-6">
+          <p className="text-xs sm:text-sm text-dark-muted mb-2 sm:mb-5">
             {trades.length} trade{trades.length !== 1 ? 's' : ''}
             {stats.totalContracts > 0 && ` · ${stats.totalContracts} contract${stats.totalContracts !== 1 ? 's' : ''}`}
           </p>
 
-          {/* Filters & sort - mobile-first */}
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-4 sm:mb-6">
-            <div className="flex items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl bg-dark-surface px-2 py-1.5 sm:px-3 sm:py-2 flex-1 min-w-[120px] sm:min-w-0 sm:flex-initial">
-              <Search size={16} className="sm:w-[18px] sm:h-[18px] text-dark-muted shrink-0" />
+          {/* Filters & sort + Add trade */}
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-3 sm:mb-5">
+            <button
+              type="button"
+              onClick={() => setShowForm(true)}
+              className="flex items-center gap-1.5 rounded-lg sm:rounded-xl bg-white text-black px-2 py-1.5 sm:px-3 sm:py-2 text-xs sm:text-sm font-medium hover:bg-gray-200 active:bg-gray-300 touch-manipulation shrink-0"
+              aria-label="Add trade"
+            >
+              <Plus size={16} className="sm:w-[18px] sm:h-[18px]" strokeWidth={2.5} />
+              <span className="hidden sm:inline">Add</span>
+            </button>
+            <div className="flex items-center gap-1.5 sm:gap-2 rounded-lg sm:rounded-xl bg-dark-surface px-2 py-1.5 sm:px-3 sm:py-2 flex-1 min-w-[100px] sm:min-w-0 sm:flex-initial">
+              <Search size={14} className="sm:w-[18px] sm:h-[18px] text-dark-muted shrink-0" />
               <input
                 type="text"
                 placeholder="Symbol..."
@@ -235,11 +244,11 @@ export default function Home() {
 
           {/* Trades - mobile-first grid */}
           {openTrades.length > 0 && (
-            <section className="mb-6 sm:mb-10">
-              <h2 className="text-base sm:text-lg font-semibold text-white tracking-wide mb-3 sm:mb-4 uppercase text-dark-muted">
+            <section className="mb-4 sm:mb-10">
+              <h2 className="text-base sm:text-lg font-semibold text-white tracking-wide mb-2 sm:mb-4 uppercase text-dark-muted">
                 Open Trades
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                 {openTrades.map(trade => (
                   <TradeCard
                     key={trade.id}
@@ -255,10 +264,10 @@ export default function Home() {
 
           {closedTrades.length > 0 && (
             <section>
-              <h2 className="text-base sm:text-lg font-semibold text-white tracking-wide mb-3 sm:mb-4 uppercase text-dark-muted">
+              <h2 className="text-base sm:text-lg font-semibold text-white tracking-wide mb-2 sm:mb-4 uppercase text-dark-muted">
                 Closed Trades
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                 {closedTrades.map(trade => (
                   <TradeCard
                     key={trade.id}
@@ -273,9 +282,9 @@ export default function Home() {
           )}
 
           {filteredTrades.length === 0 && (
-            <p className="text-dark-muted text-sm py-8">
+            <p className="text-dark-muted text-sm py-6">
               {trades.length === 0
-                ? 'No trades yet. Tap + to add one.'
+                ? 'No trades yet. Tap Add above to add one.'
                 : 'No trades match the current filters.'}
             </p>
           )}
@@ -283,42 +292,6 @@ export default function Home() {
           )}
         </div>
       </Sidebar>
-
-      {/* Compound calculator - above masterclass */}
-      <button
-        onClick={() => setView('compound')}
-        className={`fixed bottom-20 md:bottom-24 left-2 md:left-4 w-10 h-10 md:w-12 md:h-12 bg-dark-card border rounded-lg md:rounded-xl shadow-lg hover:border-white/20 transition-all duration-200 ease-out flex items-center justify-center z-40 touch-manipulation ${
-          view === 'compound'
-            ? 'bg-white text-black border-white/30'
-            : 'border-dark-border text-dark-muted hover:text-white hover:bg-dark-surface active:bg-dark-border'
-        }`}
-        aria-label="Compound interest calculator"
-      >
-        <span className="font-bold text-lg md:text-xl">%</span>
-      </button>
-
-      {/* Masterclass button - bottom of page */}
-      <button
-        onClick={() => setView('masterclass')}
-        className={`fixed bottom-4 left-2 md:bottom-6 md:left-4 w-10 h-10 md:w-12 md:h-12 bg-dark-card border rounded-lg md:rounded-xl shadow-lg hover:border-white/20 transition-all duration-200 ease-out flex items-center justify-center z-40 touch-manipulation ${
-          view === 'masterclass'
-            ? 'bg-white text-black border-white/30'
-            : 'border-dark-border text-dark-muted hover:text-white hover:bg-dark-surface active:bg-dark-border'
-        }`}
-        aria-label="Masterclass"
-      >
-        <Infinity size={20} className="md:w-6 md:h-6" strokeWidth={2.5} />
-      </button>
-
-      {/* Floating Action Button - mobile-first positioning */}
-      <button
-        onClick={() => setShowForm(true)}
-        className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-14 h-14 sm:w-14 sm:h-14 bg-white text-black rounded-full shadow-2xl hover:bg-gray-200 active:scale-95 transition-all flex items-center justify-center z-40 touch-manipulation"
-        style={{ boxShadow: '0 10px 30px rgba(0, 0, 0, 0.4)' }}
-        aria-label="Add new trade"
-      >
-        <Plus size={24} strokeWidth={2.5} className="sm:w-[26px] sm:h-[26px]" />
-      </button>
 
       {showForm && (
         <TradeForm
