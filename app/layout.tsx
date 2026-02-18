@@ -47,7 +47,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="P+" />
       </head>
-      <body className="bg-dark-bg text-dark-text min-h-screen">
+      <body className="bg-dark-bg text-dark-text min-h-[100dvh] min-h-screen">
         {children}
         <PWASetup />
       </body>

@@ -131,7 +131,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-bg text-dark-text">
+    <div className="min-h-[100dvh] min-h-screen bg-dark-bg text-dark-text flex flex-col">
       <Sidebar activeView={view} onNavigate={setView}>
         <div key={view} className="px-3 py-3 sm:px-4 sm:py-5 md:px-6 md:py-8 lg:px-8 w-full max-w-full overflow-x-hidden animate-view-in pb-6">
           {view === 'metrics' && (

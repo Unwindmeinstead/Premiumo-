@@ -153,9 +153,9 @@ export default function Sidebar({ children, activeView, onNavigate }: SidebarPro
   if (isMobile) {
     return (
       <>
-        {/* Left-edge swipe zone: swipe right to open */}
+        {/* Left-edge swipe zone: swipe right to open (inside safe area) */}
         <div
-          className="md:hidden fixed left-0 top-0 bottom-0 w-6 z-40 touch-manipulation"
+          className="md:hidden fixed left-0 w-6 z-40 touch-manipulation top-[env(safe-area-inset-top)] bottom-[env(safe-area-inset-bottom)]"
           onTouchStart={handleLeftEdgeTouchStart}
           onTouchEnd={handleLeftEdgeTouchEnd}
           aria-hidden
@@ -163,18 +163,20 @@ export default function Sidebar({ children, activeView, onNavigate }: SidebarPro
         {/* Backdrop when drawer open */}
         {drawerOpen && (
           <div
-            className="md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity"
+            className="md:hidden fixed inset-0 bg-black/50 z-40 transition-opacity top-0 left-0 right-0 bottom-0"
+            style={{ paddingTop: 'env(safe-area-inset-top)', paddingBottom: 'env(safe-area-inset-bottom)' }}
             onClick={() => setDrawerOpen(false)}
             onTouchStart={handleDrawerTouchStart}
             onTouchEnd={handleDrawerTouchEnd}
             aria-hidden
           />
         )}
-        {/* Drawer panel */}
+        {/* Drawer panel - respects safe area top */}
         <aside
-          className={`md:hidden fixed left-0 top-0 bottom-0 w-14 p-2 bg-dark-card border-r border-dark-border shadow-xl z-50 flex flex-col gap-3 transition-transform duration-200 ease-out ${
+          className={`md:hidden fixed left-0 w-14 p-2 bg-dark-card border-r border-dark-border shadow-xl z-50 flex flex-col gap-3 transition-transform duration-200 ease-out ${
             drawerOpen ? 'translate-x-0' : '-translate-x-full'
           }`}
+          style={{ top: 0, bottom: 0, paddingTop: 'max(0.5rem, env(safe-area-inset-top))' }}
           onTouchStart={handleDrawerTouchStart}
           onTouchEnd={handleDrawerTouchEnd}
         >
@@ -188,7 +190,14 @@ export default function Sidebar({ children, activeView, onNavigate }: SidebarPro
             onNavItemClick={() => setDrawerOpen(false)}
           />
         </aside>
-        <main className="ml-0 md:ml-[104px] min-w-0 h-screen overflow-y-auto overflow-x-hidden transition-all duration-200 ease-out">
+        <main
+          className="ml-0 md:ml-[104px] min-w-0 flex-1 min-h-0 overflow-y-auto overflow-x-hidden transition-all duration-200 ease-out"
+          style={{
+            paddingTop: 'max(0.75rem, env(safe-area-inset-top))',
+            paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))',
+            boxSizing: 'border-box',
+          }}
+        >
           {children}
         </main>
       </>
@@ -206,7 +215,14 @@ export default function Sidebar({ children, activeView, onNavigate }: SidebarPro
           setCollapsed={setCollapsed}
         />
       </aside>
-      <main className="ml-0 md:ml-[104px] min-w-0 h-screen overflow-y-auto overflow-x-hidden transition-all duration-200 ease-out">
+      <main
+        className="ml-0 md:ml-[104px] min-w-0 flex-1 min-h-0 overflow-y-auto overflow-x-hidden transition-all duration-200 ease-out"
+        style={{
+          paddingTop: 'env(safe-area-inset-top)',
+          paddingBottom: 'env(safe-area-inset-bottom)',
+          boxSizing: 'border-box',
+        }}
+      >
         {children}
       </main>
     </>
