@@ -78,3 +78,13 @@ button, a {
 .animate-view-in {
   animation: viewFadeIn 0.2s ease-out;
 }
+
+/* Hide scrollbar for horizontal nav while keeping scroll */
+.scrollbar-hide {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
