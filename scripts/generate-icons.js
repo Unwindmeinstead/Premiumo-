@@ -1,4 +1,4 @@
-// Generate P+ app icons (white card, black text) - matches sidebar P+ button
+// Generate P+ app icons - matches sidebar logo: green background, white P (big) and + (small)
 const path = require('path')
 const fs = require('fs')
 
@@ -6,6 +6,8 @@ const publicDir = path.join(__dirname, '..', 'public')
 if (!fs.existsSync(publicDir)) {
   fs.mkdirSync(publicDir, { recursive: true })
 }
+
+const GREEN = '#16a34a' // Tailwind green-600
 
 async function generate() {
   let sharp
@@ -18,12 +20,14 @@ async function generate() {
   }
 
   const svg192 = `<svg width="192" height="192" xmlns="http://www.w3.org/2000/svg">
-  <rect width="192" height="192" rx="24" fill="#ffffff"/>
-  <text x="96" y="118" font-family="Arial,sans-serif" font-size="72" font-weight="bold" fill="#000000" text-anchor="middle">P+</text>
+  <rect width="192" height="192" rx="24" fill="${GREEN}"/>
+  <text x="78" y="122" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="68" font-weight="800" fill="#ffffff" text-anchor="middle">P</text>
+  <text x="118" y="118" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="24" font-weight="600" fill="#ffffff" text-anchor="middle">+</text>
 </svg>`
   const svg512 = `<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <rect width="512" height="512" rx="64" fill="#ffffff"/>
-  <text x="256" y="318" font-family="Arial,sans-serif" font-size="192" font-weight="bold" fill="#000000" text-anchor="middle">P+</text>
+  <rect width="512" height="512" rx="64" fill="${GREEN}"/>
+  <text x="208" y="324" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="182" font-weight="800" fill="#ffffff" text-anchor="middle">P</text>
+  <text x="314" y="314" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="64" font-weight="600" fill="#ffffff" text-anchor="middle">+</text>
 </svg>`
 
   await sharp(Buffer.from(svg512))
@@ -32,7 +36,7 @@ async function generate() {
   await sharp(Buffer.from(svg192))
     .png()
     .toFile(path.join(publicDir, 'icon-192.png'))
-  console.log('Generated public/icon-192.png and public/icon-512.png (white card, black P+)')
+  console.log('Generated public/icon-192.png and public/icon-512.png (green P+ logo, matches sidebar)')
 }
 
 generate().catch((err) => {

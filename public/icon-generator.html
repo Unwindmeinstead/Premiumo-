@@ -3,52 +3,41 @@
 <head>
   <title>P+ Icon Generator</title>
 </head>
-<body>
+<body style="background:#1a1a1a; color:#fff; padding:20px; font-family: system-ui,sans-serif;">
+  <p>Matches sidebar logo: green background, white P (big) and + (small). Right-click each canvas → Save image as.</p>
   <canvas id="icon192" width="192" height="192"></canvas>
   <canvas id="icon512" width="512" height="512"></canvas>
   <script>
+    const GREEN = '#16a34a';
+
     function drawIcon(canvas, size) {
       const ctx = canvas.getContext('2d');
-      
-      // White card (matches app P+ button)
-      const padding = size * 0.12;
-      ctx.fillStyle = '#ffffff';
+      const r = size * 0.125;
+
+      // Green rounded rect (matches sidebar P+ button)
+      ctx.fillStyle = GREEN;
       ctx.beginPath();
-      ctx.roundRect(padding, padding, size - padding * 2, size - padding * 2, size * 0.12);
+      ctx.roundRect(0, 0, size, size, r);
       ctx.fill();
-      
-      // P+ text - black
-      ctx.fillStyle = '#000000';
-      ctx.font = `bold ${size * 0.38}px Arial, sans-serif`;
+
+      // P (big, extrabold)
+      const pFont = size * 0.354;
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `800 ${pFont}px system-ui, -apple-system, Arial, sans-serif`;
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('P+', size / 2, size / 2);
+      ctx.fillText('P', size * 0.406, size * 0.635);
+
+      // + (small)
+      const plusFont = size * 0.125;
+      ctx.font = `600 ${plusFont}px system-ui, -apple-system, Arial, sans-serif`;
+      ctx.fillText('+', size * 0.615, size * 0.615);
     }
-    
+
     const canvas192 = document.getElementById('icon192');
     const canvas512 = document.getElementById('icon512');
-    
     drawIcon(canvas192, 192);
     drawIcon(canvas512, 512);
-    
-    // Download buttons (for manual download)
-    canvas192.toBlob((blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'icon-192.png';
-      document.body.appendChild(a);
-      console.log('192x192 icon ready - right click canvas to save');
-    });
-    
-    canvas512.toBlob((blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'icon-512.png';
-      document.body.appendChild(a);
-      console.log('512x512 icon ready - right click canvas to save');
-    });
   </script>
 </body>
 </html>
