@@ -57,24 +57,34 @@ export const calculateStats = (trades: Trade[]): TradeStats => {
 }
 
 export const formatCurrency = (amount: number): string => {
-  if (typeof window !== 'undefined') {
-    const p = getPreferences()
-    const opts: Intl.NumberFormatOptions =
-      p.currencyStyle === 'plain'
-        ? { minimumFractionDigits: p.currencyDecimals, maximumFractionDigits: p.currencyDecimals }
-        : { style: 'currency', currency: 'USD', minimumFractionDigits: p.currencyDecimals, maximumFractionDigits: p.currencyDecimals }
-    return new Intl.NumberFormat('en-US', opts).format(amount)
+  try {
+    if (typeof window !== 'undefined') {
+      const p = getPreferences()
+      const opts: Intl.NumberFormatOptions =
+        p.currencyStyle === 'plain'
+          ? { minimumFractionDigits: p.currencyDecimals, maximumFractionDigits: p.currencyDecimals }
+          : { style: 'currency', currency: 'USD', minimumFractionDigits: p.currencyDecimals, maximumFractionDigits: p.currencyDecimals }
+      return new Intl.NumberFormat('en-US', opts).format(amount)
+    }
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+    }).format(amount)
+  } catch {
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(amount)
   }
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-  }).format(amount)
 }
 
 export const formatDate = (dateString: string): string => {
-  const fmt = typeof window !== 'undefined' ? getPreferences().dateFormat : 'MMM dd, yyyy'
-  return format(new Date(dateString), fmt)
+  try {
+    const d = new Date(dateString)
+    if (Number.isNaN(d.getTime())) return dateString
+    const fmt = typeof window !== 'undefined' ? getPreferences().dateFormat : 'MMM dd, yyyy'
+    return format(d, fmt)
+  } catch {
+    return dateString
+  }
 }
 
 export const getPremiumByMonth = (trades: Trade[]): { month: string; premium: number }[] => {
