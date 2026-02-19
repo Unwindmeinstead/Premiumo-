@@ -12,10 +12,10 @@ interface SidebarProps {
 
 const navItems: { view: AppView }[] = [
   { view: 'metrics' },
-  { view: 'wheel' },
   { view: 'calendar' },
   { view: 'settings' },
   { view: 'export' },
+  { view: 'wheel' },
   { view: 'compound' },
   { view: 'masterclass' },
 ]
@@ -70,7 +70,7 @@ export default function Sidebar({ children, activeView, onNavigate }: SidebarPro
               key={view}
               type="button"
               onClick={() => onNavigate(view)}
-              aria-label={view}
+              aria-label={view === 'masterclass' ? 'Options masterclass' : view}
               className={`${btnSize} ${
                 activeView === view
                   ? 'bg-white text-black border-white/30'
