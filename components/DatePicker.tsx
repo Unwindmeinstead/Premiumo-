@@ -79,7 +79,7 @@ export default function DatePicker({ value, onChange, label, required }: DatePic
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 bg-dark-card border border-white/10 rounded-lg shadow-2xl p-3 w-[280px] sm:w-[300px] animate-view-in left-0 right-0 sm:left-auto sm:right-auto">
+        <div className="absolute z-50 mt-1 left-1/2 -translate-x-1/2 bg-dark-card border border-white/10 rounded-lg shadow-2xl p-3 w-[280px] sm:w-[300px] animate-view-in">
           {/* Month navigation */}
           <div className="flex items-center justify-between mb-3">
             <button

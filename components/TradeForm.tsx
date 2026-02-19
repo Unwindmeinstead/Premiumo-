@@ -26,7 +26,7 @@ export default function TradeForm({ onSave, onClose, initialTrade }: TradeFormPr
     dateOpened: initialTrade?.dateOpened || new Date().toISOString().split('T')[0],
     status: initialTrade?.status || 'open',
     notes: initialTrade?.notes || '',
-    buybackCost: initialTrade?.buybackCost ?? 0,
+    buybackCost: initialTrade?.buybackCost != null && initialTrade.buybackCost > 0 ? initialTrade.buybackCost : undefined,
   })
 
   const totalPremium =
@@ -206,10 +206,14 @@ export default function TradeForm({ onSave, onClose, initialTrade }: TradeFormPr
               type="number"
               step="0.01"
               min={0}
-              value={formData.buybackCost ?? ''}
-              onChange={e => setFormData({ ...formData, buybackCost: parseFloat(e.target.value) || 0 })}
+              value={formData.buybackCost != null && formData.buybackCost > 0 ? formData.buybackCost : ''}
+              onChange={e => {
+                const raw = e.target.value
+                const next = raw === '' ? undefined : (() => { const n = parseFloat(raw); return Number.isNaN(n) ? undefined : n })()
+                setFormData({ ...formData, buybackCost: next })
+              }}
               className={inputBase}
-              placeholder="0 — paid to buy back"
+              placeholder="Leave blank if not closed early"
             />
           </div>
 
