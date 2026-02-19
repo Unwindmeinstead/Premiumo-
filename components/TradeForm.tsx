@@ -27,6 +27,7 @@ export default function TradeForm({ onSave, onClose, initialTrade }: TradeFormPr
     status: initialTrade?.status || 'open',
     notes: initialTrade?.notes || '',
     buybackCost: initialTrade?.buybackCost != null && initialTrade.buybackCost > 0 ? initialTrade.buybackCost : undefined,
+    dateClosed: initialTrade?.dateClosed,
   })
 
   const totalPremium =
@@ -44,7 +45,10 @@ export default function TradeForm({ onSave, onClose, initialTrade }: TradeFormPr
       quantity: formData.quantity || 1,
       dateOpened: formData.dateOpened || new Date().toISOString().split('T')[0],
       status: formData.status || 'open',
-      dateClosed: formData.dateClosed,
+      dateClosed:
+        formData.status && formData.status !== 'open'
+          ? formData.dateClosed || new Date().toISOString().split('T')[0]
+          : undefined,
       notes: formData.notes,
       buybackCost: formData.buybackCost && formData.buybackCost > 0 ? formData.buybackCost : undefined,
     }
@@ -189,7 +193,15 @@ export default function TradeForm({ onSave, onClose, initialTrade }: TradeFormPr
             <label className="block text-xs font-medium text-dark-muted mb-1">Status</label>
             <select
               value={formData.status}
-              onChange={e => setFormData({ ...formData, status: e.target.value as Trade['status'] })}
+              onChange={e => {
+                const nextStatus = e.target.value as Trade['status']
+                setFormData({
+                  ...formData,
+                  status: nextStatus,
+                  dateClosed:
+                    nextStatus === 'open' ? undefined : (formData.dateClosed || new Date().toISOString().split('T')[0]),
+                })
+              }}
               className={inputBase}
             >
               <option value="open">Open</option>
@@ -198,6 +210,17 @@ export default function TradeForm({ onSave, onClose, initialTrade }: TradeFormPr
               <option value="expired">Expired</option>
             </select>
           </div>
+
+          {/* Date closed - when status is closed/assigned/expired */}
+          {(formData.status === 'closed' || formData.status === 'assigned' || formData.status === 'expired') && (
+            <div>
+              <label className="block text-xs font-medium text-dark-muted mb-1">Date closed</label>
+              <DatePicker
+                value={formData.dateClosed || ''}
+                onChange={(date) => setFormData({ ...formData, dateClosed: date })}
+              />
+            </div>
+          )}
 
           {/* Buyback cost (when closed early) */}
           <div>

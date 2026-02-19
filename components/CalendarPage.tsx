@@ -27,7 +27,7 @@ interface CalendarPageProps {
   trades: Trade[]
 }
 
-type DayActivity = { opened: Trade[]; expiring: Trade[]; openedPremium: number; expiringPremium: number }
+type DayActivity = { opened: Trade[]; expiring: Trade[]; closed: Trade[]; openedPremium: number; expiringPremium: number }
 
 export default function CalendarPage({ trades }: CalendarPageProps) {
   const [currentMonth, setCurrentMonth] = useState(() => new Date())
@@ -43,22 +43,27 @@ export default function CalendarPage({ trades }: CalendarPageProps) {
     const map = new Map<string, DayActivity>()
     trades.forEach((t) => {
       const opened = t.dateOpened
-      const exp = t.expiration
       const openPremium = t.premium * t.quantity
-      const add = (dateStr: string, type: 'opened' | 'expiring', trade: Trade, premium: number) => {
+      const add = (dateStr: string, type: 'opened' | 'expiring' | 'closed', trade: Trade, premium: number) => {
         const key = dateStr
-        if (!map.has(key)) map.set(key, { opened: [], expiring: [], openedPremium: 0, expiringPremium: 0 })
+        if (!map.has(key)) map.set(key, { opened: [], expiring: [], closed: [], openedPremium: 0, expiringPremium: 0 })
         const a = map.get(key)!
         if (type === 'opened') {
           a.opened.push(trade)
           a.openedPremium += premium
-        } else {
+        } else if (type === 'expiring') {
           a.expiring.push(trade)
           a.expiringPremium += premium
+        } else {
+          a.closed.push(trade)
         }
       }
       add(opened, 'opened', t, openPremium)
-      if (exp !== opened) add(exp, 'expiring', t, 0)
+      if (t.status === 'open') {
+        if (t.expiration && t.expiration !== opened) add(t.expiration, 'expiring', t, 0)
+      } else if (t.dateClosed) {
+        add(t.dateClosed, 'closed', t, 0)
+      }
     })
     return map
   }, [trades])
@@ -76,7 +81,7 @@ export default function CalendarPage({ trades }: CalendarPageProps) {
           </div>
           <div className="min-w-0">
             <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white mb-0.5">Calendar</h1>
-            <p className="text-xs sm:text-sm text-dark-muted">Trades by open and expiration date</p>
+            <p className="text-xs sm:text-sm text-dark-muted">Trades by open, expiration, and closed date</p>
           </div>
         </div>
       </div>
@@ -144,7 +149,7 @@ export default function CalendarPage({ trades }: CalendarPageProps) {
                 <span className={`text-xs sm:text-sm md:text-base font-medium ${!isCurrentMonth ? 'opacity-70' : ''}`}>
                   {format(day, 'd')}
                 </span>
-                {activity && (activity.opened.length > 0 || activity.expiring.length > 0) && (
+                {activity && (activity.opened.length > 0 || activity.expiring.length > 0 || activity.closed.length > 0) && (
                   <div className="mt-0.5 flex flex-col gap-0.5 overflow-hidden">
                     {activity.opened.length > 0 && (
                       <span className="text-[9px] sm:text-[10px] md:text-xs leading-tight truncate" title={`Opened: ${formatCurrency(activity.openedPremium)}`}>
@@ -152,8 +157,13 @@ export default function CalendarPage({ trades }: CalendarPageProps) {
                       </span>
                     )}
                     {activity.expiring.length > 0 && (
-                      <span className="text-[9px] sm:text-[10px] md:text-xs leading-tight truncate text-red-300/90" title="Expiring">
+                      <span className="text-[9px] sm:text-[10px] md:text-xs leading-tight truncate text-amber-300/90" title="Expiring">
                         ↓{activity.expiring.length}
+                      </span>
+                    )}
+                    {activity.closed.length > 0 && (
+                      <span className="text-[9px] sm:text-[10px] md:text-xs leading-tight truncate text-green-300/90" title="Closed">
+                        ↓{activity.closed.length}
                       </span>
                     )}
                   </div>
@@ -164,7 +174,7 @@ export default function CalendarPage({ trades }: CalendarPageProps) {
         </div>
 
         <p className="text-[10px] sm:text-xs md:text-sm text-dark-muted mt-2 md:mt-3">
-          ↑ opened · ↓ expiring. Tap a day to see trades.
+          ↑ opened · ↓ expiring (open) · ↓ closed. Tap a day to see trades.
         </p>
       </section>
 
@@ -174,7 +184,7 @@ export default function CalendarPage({ trades }: CalendarPageProps) {
           <h3 className="text-sm sm:text-base md:text-lg font-semibold text-white mb-2 md:mb-3">
             {format(selectedDate, 'EEEE, MMM d, yyyy')}
           </h3>
-          {selectedDayActivity && (selectedDayActivity.opened.length > 0 || selectedDayActivity.expiring.length > 0) ? (
+          {selectedDayActivity && (selectedDayActivity.opened.length > 0 || selectedDayActivity.expiring.length > 0 || selectedDayActivity.closed.length > 0) ? (
             <div className="space-y-3 md:space-y-4">
               {selectedDayActivity.opened.length > 0 && (
                 <div>
@@ -215,9 +225,27 @@ export default function CalendarPage({ trades }: CalendarPageProps) {
                   </ul>
                 </div>
               )}
+              {selectedDayActivity.closed.length > 0 && (
+                <div>
+                  <p className="text-xs sm:text-sm font-medium text-dark-muted mb-1.5 md:mb-2">Closed</p>
+                  <ul className="space-y-1.5 md:space-y-2">
+                    {selectedDayActivity.closed.map((t) => (
+                      <li
+                        key={t.id}
+                        className="flex justify-between items-center text-xs sm:text-sm md:text-base py-1.5 md:py-2 px-2 md:px-3 rounded-lg bg-dark-surface"
+                      >
+                        <span className="font-medium text-white">{t.symbol}</span>
+                        <span className="text-dark-muted">
+                          {t.type === 'covered_call' ? 'Call' : 'Put'} · {formatCurrency(t.premium * t.quantity)}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           ) : (
-            <p className="text-sm md:text-base text-dark-muted">No trades opened or expiring on this day.</p>
+            <p className="text-sm md:text-base text-dark-muted">No trades opened, expiring, or closed on this day.</p>
           )}
         </section>
       )}
