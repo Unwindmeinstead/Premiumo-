@@ -74,6 +74,8 @@ export default function MetricsPage({
                 </div>
                 <ul className="text-xs text-dark-muted space-y-2">
                   <li><span className="text-white font-medium">Premium</span> = cash you received for selling the option.</li>
+                  <li><span className="text-white font-medium">Total cost</span> = money paid to close early (buyback).</li>
+                  <li><span className="text-white font-medium">Net premium</span> = premium received − cost to close.</li>
                   <li><span className="text-white font-medium">Total / Month / YTD / Week</span> = premium in that period (closed + open where applicable).</li>
                   <li><span className="text-white font-medium">Win rate</span> = % of closed trades where you kept the full premium (no buyback cost).</li>
                   <li><span className="text-white font-medium">Avg per trade</span> = total premium ÷ number of trades.</li>
@@ -91,7 +93,7 @@ export default function MetricsPage({
           Premium over time
         </h2>
         <p className="text-xs text-dark-muted mb-3 sm:mb-4 max-w-2xl">
-          Total premium collected in different time windows. All time, this month, year to date, and this week.
+          Premium collected, cost to close early, and net. Plus premium by time window (month, YTD, week).
         </p>
         <div className={`grid grid-cols-2 sm:grid-cols-4 ${gridGap}`}>
         <div className={cardBase}>
@@ -102,7 +104,27 @@ export default function MetricsPage({
             {formatCurrency(stats.totalPremium)}
           </p>
           <p className="text-xs sm:text-sm text-dark-muted mt-0.5">Total Premium</p>
-          <p className="text-[10px] sm:text-xs text-dark-muted mt-1">All time</p>
+          <p className="text-[10px] sm:text-xs text-dark-muted mt-1">All time received</p>
+        </div>
+        <div className={cardBase}>
+          <div className="p-1.5 sm:p-2 md:p-2.5 bg-dark-surface rounded-lg sm:rounded-xl w-fit mb-2 sm:mb-3">
+            <DollarSign size={18} className="sm:w-5 sm:h-5 text-red-400" />
+          </div>
+          <p className="text-xl sm:text-2xl font-bold text-red-400 tracking-tight break-words">
+            {formatCurrency(stats.totalBuybackCost)}
+          </p>
+          <p className="text-xs sm:text-sm text-dark-muted mt-0.5">Total Cost</p>
+          <p className="text-[10px] sm:text-xs text-dark-muted mt-1">Closed early</p>
+        </div>
+        <div className={cardBase}>
+          <div className="p-1.5 sm:p-2 md:p-2.5 bg-dark-surface rounded-lg sm:rounded-xl w-fit mb-2 sm:mb-3">
+            <DollarSign size={18} className={`sm:w-5 sm:h-5 ${stats.netPremium >= 0 ? 'text-green-400' : 'text-red-400'}`} />
+          </div>
+          <p className={`text-xl sm:text-2xl font-bold tracking-tight break-words ${stats.netPremium >= 0 ? 'text-green-400' : 'text-red-500'}`}>
+            {formatCurrency(stats.netPremium)}
+          </p>
+          <p className="text-xs sm:text-sm text-dark-muted mt-0.5">Net Premium</p>
+          <p className="text-[10px] sm:text-xs text-dark-muted mt-1">Premium − cost</p>
         </div>
         <div className={cardBase}>
           <div className="p-1.5 sm:p-2 md:p-2.5 bg-dark-surface rounded-lg sm:rounded-xl w-fit mb-2 sm:mb-3">
@@ -112,7 +134,7 @@ export default function MetricsPage({
             {formatCurrency(stats.monthlyPremium)}
           </p>
           <p className="text-xs sm:text-sm text-dark-muted mt-0.5">This Month</p>
-          <p className="text-[10px] sm:text-xs text-dark-muted mt-1">Calendar month</p>
+          <p className="text-[10px] sm:text-xs text-dark-muted mt-1">Premium this month</p>
         </div>
         <div className={cardBase}>
           <div className="p-1.5 sm:p-2 md:p-2.5 bg-dark-surface rounded-lg sm:rounded-xl w-fit mb-2 sm:mb-3">
