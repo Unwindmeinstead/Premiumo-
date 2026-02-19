@@ -7,4 +7,5 @@ export {
   exportTradesToCsv,
   exportTradesToCsvWithFilename,
   exportTradesToJson,
+  clearAllAppData,
 } from './storage/index'

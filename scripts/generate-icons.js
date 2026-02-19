@@ -1,4 +1,4 @@
-// Add-to-home icon: full icon space, white background, green P+ filling the space
+// Add-to-home icon: white background, giant dark green P
 const path = require('path')
 const fs = require('fs')
 
@@ -7,7 +7,7 @@ if (!fs.existsSync(publicDir)) {
   fs.mkdirSync(publicDir, { recursive: true })
 }
 
-const GREEN = '#16a34a' // Tailwind green-600
+const DARK_GREEN = '#166534' // dark green
 
 async function generate() {
   let sharp
@@ -18,20 +18,19 @@ async function generate() {
     process.exit(1)
   }
 
-  // White background, green P+ full size (single text, centered)
   const svg192 = `<svg width="192" height="192" xmlns="http://www.w3.org/2000/svg">
   <rect width="192" height="192" fill="#ffffff"/>
-  <text x="96" y="118" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="110" font-weight="900" fill="${GREEN}" text-anchor="middle" dominant-baseline="middle">P+</text>
+  <text x="96" y="118" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="140" font-weight="900" fill="${DARK_GREEN}" text-anchor="middle" dominant-baseline="middle">P</text>
 </svg>`
 
   const svg180 = `<svg width="180" height="180" xmlns="http://www.w3.org/2000/svg">
   <rect width="180" height="180" fill="#ffffff"/>
-  <text x="90" y="110" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="102" font-weight="900" fill="${GREEN}" text-anchor="middle" dominant-baseline="middle">P+</text>
+  <text x="90" y="110" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="132" font-weight="900" fill="${DARK_GREEN}" text-anchor="middle" dominant-baseline="middle">P</text>
 </svg>`
 
   const svg512 = `<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
   <rect width="512" height="512" fill="#ffffff"/>
-  <text x="256" y="310" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="292" font-weight="900" fill="${GREEN}" text-anchor="middle" dominant-baseline="middle">P+</text>
+  <text x="256" y="310" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="372" font-weight="900" fill="${DARK_GREEN}" text-anchor="middle" dominant-baseline="middle">P</text>
 </svg>`
 
   await sharp(Buffer.from(svg512))
@@ -44,7 +43,7 @@ async function generate() {
     .png()
     .toFile(path.join(publicDir, 'apple-touch-icon.png'))
 
-  console.log('Generated icons: white background, green P+ full size')
+  console.log('Generated icons: white background, giant dark green P')
 }
 
 generate().catch((err) => {

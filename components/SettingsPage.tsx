@@ -11,7 +11,8 @@ import {
   type DefaultSortField,
   type DefaultFilter,
 } from '@/lib/preferences'
-import { Shield, Database, Download, Info, Palette, LayoutDashboard, BarChart3 } from 'lucide-react'
+import { Shield, Database, Download, Info, Palette, LayoutDashboard, BarChart3, Trash2 } from 'lucide-react'
+import { clearAllAppData } from '@/lib/storage'
 
 const cardBase =
   'bg-dark-card border border-white/10 rounded-lg sm:rounded-xl p-4 sm:p-5 md:p-5 lg:p-6 hover:border-white/20 transition-colors'
@@ -87,8 +88,12 @@ function Toggle({
   )
 }
 
+const btnBase =
+  'w-full flex items-center justify-center gap-2 py-2.5 sm:py-3 px-4 rounded-lg sm:rounded-xl text-xs sm:text-sm font-medium transition-colors disabled:opacity-50 touch-manipulation'
+
 export default function SettingsPage() {
   const [prefs, setPrefs] = useState<Preferences>(DEFAULT_PREFERENCES)
+  const [confirmClear, setConfirmClear] = useState(false)
 
   useEffect(() => {
     setPrefs(getPreferences())
@@ -236,9 +241,42 @@ export default function SettingsPage() {
               </div>
               <h2 className="text-sm sm:text-base font-semibold text-white">Data & privacy</h2>
             </div>
-            <p className="text-xs sm:text-sm md:text-base text-dark-muted leading-relaxed">
-              All trades and metrics stay on this device. Nothing is sent to the cloud. Clear site data in your browser to remove everything.
+            <p className="text-xs sm:text-sm md:text-base text-dark-muted leading-relaxed mb-3">
+              All trades and metrics stay on this device. Nothing is sent to the cloud.
             </p>
+            {!confirmClear ? (
+              <button
+                type="button"
+                onClick={() => setConfirmClear(true)}
+                className={`${btnBase} border border-red-500/60 text-red-400 hover:bg-red-500/20`}
+              >
+                <Trash2 size={16} />
+                Delete all data
+              </button>
+            ) : (
+              <div className="space-y-2">
+                <p className="text-xs text-dark-muted">Clear all trades and settings from this device? This cannot be undone. Export first if you want a backup.</p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      clearAllAppData()
+                      window.location.reload()
+                    }}
+                    className={`${btnBase} flex-1 bg-red-600 text-white hover:bg-red-700`}
+                  >
+                    Yes, clear everything
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmClear(false)}
+                    className={`${btnBase} flex-1 border border-dark-border bg-dark-surface text-white hover:bg-white/10`}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </section>
 
           {/* Backup */}
