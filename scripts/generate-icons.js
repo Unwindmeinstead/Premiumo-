@@ -7,7 +7,7 @@ if (!fs.existsSync(publicDir)) {
   fs.mkdirSync(publicDir, { recursive: true })
 }
 
-const BLACK = '#000000'
+const PITCH_BLACK = '#000000'
 
 async function generate() {
   let sharp
@@ -18,20 +18,21 @@ async function generate() {
     process.exit(1)
   }
 
-  // White background, black P filling the entire icon surface (max size)
+  const textStyle = `font-family="system-ui, -apple-system, Arial, sans-serif" font-weight="900" fill="${PITCH_BLACK}" stroke="${PITCH_BLACK}" stroke-width="1" paint-order="stroke fill" text-anchor="middle" dominant-baseline="middle"`
+  // White background, pitch black P (stroke + fill so no gray anti-alias)
   const svg192 = `<svg width="192" height="192" xmlns="http://www.w3.org/2000/svg">
   <rect width="192" height="192" fill="#ffffff"/>
-  <text x="96" y="96" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="185" font-weight="800" fill="${BLACK}" text-anchor="middle" dominant-baseline="middle">P</text>
+  <text x="96" y="96" font-size="185" ${textStyle}>P</text>
 </svg>`
 
   const svg180 = `<svg width="180" height="180" xmlns="http://www.w3.org/2000/svg">
   <rect width="180" height="180" fill="#ffffff"/>
-  <text x="90" y="90" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="172" font-weight="800" fill="${BLACK}" text-anchor="middle" dominant-baseline="middle">P</text>
+  <text x="90" y="90" font-size="172" ${textStyle}>P</text>
 </svg>`
 
   const svg512 = `<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
   <rect width="512" height="512" fill="#ffffff"/>
-  <text x="256" y="256" font-family="system-ui, -apple-system, Arial, sans-serif" font-size="495" font-weight="800" fill="${BLACK}" text-anchor="middle" dominant-baseline="middle">P</text>
+  <text x="256" y="256" font-size="495" ${textStyle}>P</text>
 </svg>`
 
   await sharp(Buffer.from(svg512))
