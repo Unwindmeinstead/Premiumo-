@@ -14,6 +14,8 @@ interface TradeCardProps {
 
 export default function TradeCard({ trade, onEdit, onDuplicate, onDelete }: TradeCardProps) {
   const totalPremium = trade.premium * trade.quantity
+  const costToClose = trade.buybackCost ?? 0
+  const profit = totalPremium - costToClose
   const isCall = trade.type === 'covered_call'
 
   const statusClass = 'bg-white/10 text-white border border-white/20 rounded-lg'
@@ -87,11 +89,18 @@ export default function TradeCard({ trade, onEdit, onDuplicate, onDelete }: Trad
         </div>
       </div>
       {trade.buybackCost != null && trade.buybackCost > 0 && (
-        <div className="mb-3 sm:mb-4 rounded-lg bg-dark-surface px-2.5 sm:px-3 py-1.5 sm:py-2">
+        <div className="mb-2 rounded-lg bg-dark-surface px-2.5 sm:px-3 py-1.5 sm:py-2">
           <p className="text-[10px] sm:text-xs text-dark-muted">Cost (closed early)</p>
           <p className="text-xs sm:text-sm font-semibold text-white">{formatCurrency(trade.buybackCost)}</p>
         </div>
       )}
+
+      <div className="mb-3 sm:mb-4 rounded-lg bg-dark-surface px-2.5 sm:px-3 py-1.5 sm:py-2">
+        <p className="text-[10px] sm:text-xs text-dark-muted mb-0.5">Total profit</p>
+        <p className={`text-sm sm:text-base font-bold ${profit > 0 ? 'text-green-400' : profit < 0 ? 'text-red-500' : 'text-white'}`}>
+          {profit > 0 ? '+' : ''}{formatCurrency(profit)}
+        </p>
+      </div>
 
       <div className="pt-3 sm:pt-4 border-t border-dark-border">
         <div className="flex justify-between text-xs sm:text-sm">

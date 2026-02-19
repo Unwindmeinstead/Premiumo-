@@ -22,7 +22,7 @@ import CompoundCalculatorPage from '@/components/CompoundCalculatorPage'
 import OptionWheelSimulatorPage from '@/components/OptionWheelSimulatorPage'
 import Sidebar from '@/components/Sidebar'
 import type { AppView } from '@/components/Sidebar'
-import { Plus, DollarSign, Calendar, TrendingUp, ArrowUpDown, Search } from 'lucide-react'
+import { Plus, DollarSign, Calendar, TrendingUp, ArrowUpDown, Search, Trash2 } from 'lucide-react'
 
 type FilterType = 'all' | 'covered_call' | 'cash_secured_put'
 type SortField = 'dateOpened' | 'expiration' | 'premium' | 'symbol'
@@ -46,6 +46,7 @@ export default function Home() {
   const [prefs, setPrefs] = useState<ReturnType<typeof getPreferences> | null>(() =>
     typeof window !== 'undefined' ? getPreferences() : null
   )
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null)
 
   useEffect(() => {
     setTrades(getTrades())
@@ -117,10 +118,13 @@ export default function Home() {
     setShowForm(true)
   }
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this trade?')) {
-      deleteTrade(id)
+  const handleDelete = (id: string) => setDeleteConfirmId(id)
+
+  const confirmDelete = () => {
+    if (deleteConfirmId) {
+      deleteTrade(deleteConfirmId)
       setTrades(getTrades())
+      setDeleteConfirmId(null)
     }
   }
 
@@ -130,8 +134,45 @@ export default function Home() {
     setDuplicateSource(undefined)
   }
 
+  const deleteConfirmTrade = deleteConfirmId ? trades.find(t => t.id === deleteConfirmId) : null
+
   return (
     <div className="min-h-[100dvh] min-h-screen bg-dark-bg text-dark-text flex flex-col">
+      {/* Delete confirmation modal - in-app UI */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title">
+          <div className="w-full max-w-sm bg-dark-card border border-white/20 rounded-xl p-5 shadow-xl">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="p-2 rounded-lg bg-red-500/20">
+                <Trash2 size={20} className="text-red-400" />
+              </div>
+              <h2 id="delete-dialog-title" className="text-lg font-semibold text-white">Delete trade</h2>
+            </div>
+            <p className="text-sm text-dark-muted mb-5">
+              {deleteConfirmTrade
+                ? `Delete ${deleteConfirmTrade.symbol} (${deleteConfirmTrade.type === 'covered_call' ? 'call' : 'put'})? This cannot be undone.`
+                : 'Delete this trade? This cannot be undone.'}
+            </p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setDeleteConfirmId(null)}
+                className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium border border-dark-border bg-dark-surface text-white hover:bg-white/10 transition-colors touch-manipulation"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={confirmDelete}
+                className="flex-1 py-2.5 px-4 rounded-lg text-sm font-medium bg-red-600 text-white hover:bg-red-700 transition-colors touch-manipulation"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <Sidebar activeView={view} onNavigate={setView}>
         <div key={view} className="px-3 py-3 sm:px-4 sm:py-5 md:px-6 md:py-8 lg:px-8 w-full max-w-full overflow-x-hidden animate-view-in pb-6">
           {view === 'metrics' && (
@@ -154,9 +195,10 @@ export default function Home() {
           {/* Top metrics - 4 small cards - mobile-first */}
           <section className="grid grid-cols-2 gap-1.5 sm:gap-3 md:gap-4 mb-3 sm:mb-5">
             <StatsCard
-              title="Total Premium"
-              value={formatCurrency(stats.totalPremium)}
+              title="Premium received − cost to close"
+              value={formatCurrency(stats.netPremium)}
               icon={<DollarSign size={20} className="text-white" />}
+              valueClassName={stats.netPremium >= 0 ? 'text-green-400' : 'text-red-500'}
             />
             {prefs?.dashboardShowCostCard !== false && (
               <StatsCard

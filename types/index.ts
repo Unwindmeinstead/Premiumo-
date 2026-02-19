@@ -20,6 +20,8 @@ export interface TradeStats {
   totalPremium: number
   /** Sum of buybackCost across all trades (money paid when closing early) */
   totalBuybackCost: number
+  /** Premium received − cost to close (net) */
+  netPremium: number
   openTrades: number
   closedTrades: number
   monthlyPremium: number

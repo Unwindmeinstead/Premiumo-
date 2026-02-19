@@ -42,6 +42,7 @@ export const calculateStats = (trades: Trade[]): TradeStats => {
   return {
     totalPremium,
     totalBuybackCost,
+    netPremium: totalPremium - totalBuybackCost,
     openTrades,
     closedTrades,
     monthlyPremium,
